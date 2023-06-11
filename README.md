@@ -1,4 +1,4 @@
-# FLBench - Federated Learning benchmark for edge computing applications
+# FLEdge - Benchmarking Federated Machine Learning Applications in Edge Computing Systems
 FLBench provides a modular toolkit for quickly building and evaluating federated learning applications in edge computing 
 environments.
 
