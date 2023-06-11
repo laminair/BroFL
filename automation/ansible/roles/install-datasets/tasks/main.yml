@@ -28,21 +28,21 @@
     path: "{{ project_path }}/pipelines/shakespeare/data/processed"
   register: shakespeare_downloaded
 
-- name: Download & install BLOND dataset (pre-sampled for FLBench)
+- name: Download & install BLOND dataset (pre-sampled for FLEdge)
   unarchive:
     src: "{{ blond_url }}"
     dest: "{{ project_path }}/pipelines/blond/data"
     remote_src: yes
   when: not blond_downloaded.stat.exists
 
-- name: Download & install EMNIST dataset (pre-sampled for FLBench)
+- name: Download & install EMNIST dataset (pre-sampled for FLEdge)
   unarchive:
     src: "{{ mnist_url }}"
     dest: "{{ project_path }}/pipelines/mnist/data"
     remote_src: yes
   when: not mnist_downloaded.stat.exists
 
-- name: Download & install Shakespeare dataset (pre-sampled for FLBench)
+- name: Download & install Shakespeare dataset (pre-sampled for FLEdge)
   unarchive:
     src: "{{ shakespeare_url }}"
     dest: "{{ project_path }}/pipelines/shakespeare/data"

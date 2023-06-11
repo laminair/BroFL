@@ -2,7 +2,7 @@
 - hosts: all
   vars:
     LLVM_CONFIG: /usr/bin/llvm-config-10
-    project_path: /opt/flbench
+    project_path: /opt/fledge
     git_repo: https://github.com/laminair/FLEdge.git
   remote_user: ubuntu
   environment:
@@ -10,9 +10,9 @@
   roles:
     - install-packages
 
-- hosts: flbench_server*
+- hosts: fledge_server*
   vars:
-    project_path: /opt/flbench
+    project_path: /opt/fledge
     blond_url: https://syncandshare.lrz.de/dl/fijpmv6DXWq4jeSnBiUg2/blond.zip # 45 clients
     mnist_url: https://syncandshare.lrz.de/dl/fiH155kK1RiBMx7iaV5nK/mnist.zip # 45 clients
     shakespeare_url: https://syncandshare.lrz.de/dl/fiBqu84GYJjywN5HepU8uH/shakespeare.zip # 45 clients
@@ -22,9 +22,9 @@
   roles:
     - install-datasets
 
-- hosts: flbench_client*
+- hosts: fledge_client*
   vars:
-    project_path: /opt/flbench
+    project_path: /opt/fledge
     LLVM_CONFIG: /usr/bin/llvm-config-10
     blond_url: https://syncandshare.lrz.de/dl/fijpmv6DXWq4jeSnBiUg2/blond.zip # 45 clients
     mnist_url: https://syncandshare.lrz.de/dl/fiH155kK1RiBMx7iaV5nK/mnist.zip # 45 clients
@@ -33,9 +33,9 @@
   roles:
     - install-datasets
 
-- hosts: flbench_orchestrator
+- hosts: fledge_orchestrator
   vars:
-    project_path: /opt/flbench
+    project_path: /opt/fledge
     LLVM_CONFIG: /usr/bin/llvm-config-10
   remote_user: ubuntu
   roles:

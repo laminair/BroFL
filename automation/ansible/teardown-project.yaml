@@ -2,7 +2,7 @@
 - hosts: all
   vars:
     LLVM_CONFIG:
-    project_path: /opt/flbench
+    project_path: /opt/fledge
   remote_user: ubuntu
   environment:
     LLVM_CONFIG: /usr/bin/llvm-config-10

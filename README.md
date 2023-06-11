@@ -1,12 +1,12 @@
 # FLEdge - Benchmarking Federated Machine Learning Applications in Edge Computing Systems
-FLBench provides a modular toolkit for quickly building and evaluating federated learning applications in edge computing 
+FLEdge provides a modular toolkit for quickly building and evaluating federated learning applications in edge computing 
 environments.
 
 ## Resources
 TBA
 
 ## Reference implementations
-FLBench provides three reference implementations from different fields of application.
+FLEdge provides three reference implementations from different fields of application.
 
 | **#** | **Use case** | **Dataset**                                                                                 | **Model architecture**      | **Source**                                                                                                            | **Pipeline**     | **ML Models**                        |
 |-------|--------------|---------------------------------------------------------------------------------------------|-----------------------------|-----------------------------------------------------------------------------------------------------------------------|------------------|--------------------------------------|
@@ -67,7 +67,7 @@ must replace them. See here for details: https://github.com/pytorch/opacus/blob/
 
 
 ## Platform dependencies
-Installation of FLBench requires the following prerequisites: 
+Installation of FLEdge requires the following prerequisites: 
 
 ```
 Platform requirements: 
@@ -82,7 +82,7 @@ Python packages
     Flower:                 0.18.0 (used for the paper) / 1.3.0
     and respective dependencies that are compatible with above mentioned packages (Installable via requirements.txt).
 ```
-**Important note**: The implementation for the FLBench paper is available in branch "flbench-paper". It contains an 
+**Important note**: The implementation for the FLEdge paper is available in branch "fledge-paper". It contains an 
 older version of our code that is compatible with Ubuntu 18.04 LTS and Python 3.6. This is due to the recent deprecation
 Nvidia Jetson Nano (2020) platform.
 
@@ -97,17 +97,17 @@ The automation is available in the project's `automation` folder.
 ### Ansible for bare-metal deployments
 To run the installation process with Ansible only, you need to create an inventory `ansible/inventory_static.cfg` first.
 It must contain a server instance and as many clients as you like. Below is an example of an ansible inventory.
-In case you want the experiment automation to work, you must label the server starting with `[flbench_server]` and the 
-clients starting with `[flbench_client]`. You may put any character combination after these labels.
+In case you want the experiment automation to work, you must label the server starting with `[fledge_server]` and the 
+clients starting with `[fledge_client]`. You may put any character combination after these labels.
 
 ```editorconfig
-[flbench_client_<YOUR IDENTIFIER>]
+[fledge_client_<YOUR IDENTIFIER>]
 192.168.0.2
 192.168.0.3
 192.168.0.4
 ...
 
-[flbench_server]
+[fledge_server]
 192.168.1.1
 ...
 ```
@@ -117,7 +117,7 @@ To quickly ramp up experiments or a testbench. the cloud is the best place to go
 Terraform and Ansible. For this to run you need to configure Terraform first and provide the correct `provider` and 
 instance configurations. Below are examples: 
 
-**flbench.tf**
+**fledge.tf**
 ```terraform
 terraform {
   required_providers {
@@ -139,7 +139,7 @@ provider "opennebula" {
 ...
 ```
 
-Also, in the flbench.tf configuration, you must provide instance configurations. For this, take a look at the official
+Also, in the fledge.tf configuration, you must provide instance configurations. For this, take a look at the official
 terraform docs for your specific cloud provider. Here's a starting point: [Terraform Docs on Providers](https://registry.terraform.io/browse/providers).
 
 **variables.tf**
@@ -199,34 +199,34 @@ run from the project root directory. To build the latest images:
 
 #### AMD64 Generic
 ```commandline
-docker build -t <YOUR_NAME>/flbench:2.2.0-amd64 -f ./docker/v2.2.0/Dockerfile_generic_amd64 .
+docker build -t <YOUR_NAME>/fledge:2.2.0-amd64 -f ./docker/v2.2.0/Dockerfile_generic_amd64 .
 ```
 
 #### AMD64 GPU-accelerated
 ```commandline
-docker build -t <YOUR_NAME>/flbench:2.2.0-amd64-nvidia -f ./docker/v2.2.0/Dockerfile_nvidia_amd64 .
+docker build -t <YOUR_NAME>/fledge:2.2.0-amd64-nvidia -f ./docker/v2.2.0/Dockerfile_nvidia_amd64 .
 ```
 #### ARM64 Generic
 This image can also be run on Jetson Nano 2GB (without GPU acceleration)
 ```commandline
-docker build -t <YOUR_NAME>/flbench:2.2.0-arm64 -f ./docker/v2.2.0/Dockerfile_generic_arm64 .
+docker build -t <YOUR_NAME>/fledge:2.2.0-arm64 -f ./docker/v2.2.0/Dockerfile_generic_arm64 .
 ```
 
 #### Nvidia Jetson Nano 2GB
 Please note that the last supported OS was 18.04 LTS and PyTorch 1.10 with CUDA 10.3. There will be no further updates
 on this image beyond v1.0.0
 ```commandline
-docker build -t <YOUR_NAME>/flbench:1.0.0-arm64-jnano -f ./docker/v1.0.0/Dockerfile_jnano_arm64 .
+docker build -t <YOUR_NAME>/fledge:1.0.0-arm64-jnano -f ./docker/v1.0.0/Dockerfile_jnano_arm64 .
 ```
 
 ## Including your own pipelines
-We designed FLBench such that extending it with additional ML pipelines becomes simple.
+We designed FLEdge such that extending it with additional ML pipelines becomes simple.
 For this we require three things: PyTorch Lightning as a basis, a PyTorch Lightning Module for our ML model, and a 
 PyTorch Lightning Data Module for data loading. The configuration for your pipeline must be included in `config.json`.
 You may include preprocessing as needed. Our built-in pipelines provide examples on how to preprocess data.
 
 ### Lightning Module
-The PyTorch Lightning module must have the following signature to work with FLBench. A full reference is available in 
+The PyTorch Lightning module must have the following signature to work with FLEdge. A full reference is available in 
 the [PyTorch Lightning Docs](https://pytorch-lightning.readthedocs.io/en/stable/common/lightning_module.html).
 
 ```python
@@ -252,10 +252,10 @@ class YourLightningDataModule(pl.LightningModule):
         ...
 ```
 
-## Using FLBench
+## Using FLEdge
 Our design allows to run local and federated experiments with an arbitrary number of clients and a single server endpoint.
 
-![FLBench System Design](evaluations/paper_figures_OLD/experiment_design/220927_FL_System_Conceptual.png)
+![FLEdge System Design](evaluations/paper_figures_OLD/experiment_design/220927_FL_System_Conceptual.png)
 
 ### Running baseline experiments locally on a single device
 Running a baseline provides the best possible results of an ML pipeline and lays the ground for doing a sensitivity 
@@ -280,16 +280,16 @@ venv/bin/python3 device.py --client-id 0 --pipeline blond --ml-model cnn --data-
 
 ### Remarks about strategies
 We changed the all Flower strategies to take care of assigning clients their IDs in the `configure_fit` and 
-`configure_evaluate` functions of the FedAvg and qFedAvg strategies. Therefore, we import all strategies from inside the FLBench 
+`configure_evaluate` functions of the FedAvg and qFedAvg strategies. Therefore, we import all strategies from inside the FLEdge 
 project. This does not change the functional behavior. You only get more configuration options.
 
-**Important note:** FLBench is now using derivatives of Flower's built-in strategies to allow for greater flexibility. 
+**Important note:** FLEdge is now using derivatives of Flower's built-in strategies to allow for greater flexibility. 
 You can find them in `modules/strategies`. The functionality in terms of how models are merged has not changed. With the
 derivative implementations, we are able to configure clients individually via the server and do not have to handle extensive
 SSH instructions.
 
 ### Launching federated experiments
-The purpose of FLBench is to explor FL workloads in embedded devices and in edge computing systems. We provide a `server`
+The purpose of FLEdge is to explor FL workloads in embedded devices and in edge computing systems. We provide a `server`
 and `device` endpoint to configure the FL system.
 
 **Launching the server** (minimal parameterization)
@@ -320,7 +320,7 @@ automation, make sure to install all dependencies with Ansible.
 
 Running the automation can be done with the following command: 
 ```commandline
-python3 automation/experiments/flbench.py --inventory-path automation/ansible/inventory.cfg --server-endpoint 127.0.0.1:8080
+python3 automation/experiments/fledge.py --inventory-path automation/ansible/inventory.cfg --server-endpoint 127.0.0.1:8080
 ```
 
 ## Simulation 
@@ -337,11 +337,11 @@ Here we list issues related to external libraries and how to circumvent them.
 
 ### Scikit-learn throws an error that TLS blocks may not be allocated.
 When running scikit-learn on Aarch64, you must preload the `libgomp` library. Refer here for more details: [StackOverflow](https://stackoverflow.com/questions/67735216/after-using-pip-i-get-the-error-scikit-learn-has-not-been-built-correctly)
-For FLBench, this is done like so: 
+For FLEdge, this is done like so: 
 ```commandline
-export LD_PRELOAD='/opt/flbench/venv/lib/python3.9/site-packages/scikit_learn.libs/libgomp-d22c30c5.so.1.0.0'
+export LD_PRELOAD='/opt/fledge/venv/lib/python3.9/site-packages/scikit_learn.libs/libgomp-d22c30c5.so.1.0.0'
 ```
-When running FLBench with scapy monitoring, you must preserve the bash environment with `sudo -E` to maintain the 
+When running FLEdge with scapy monitoring, you must preserve the bash environment with `sudo -E` to maintain the 
 exported variable or export the variables o the sudo/root environment.
 
 ### Running the TextClassification Task on Apple Silicon with MPS acceleration
@@ -352,5 +352,5 @@ PYTORCH_ENABLE_MPS_FALLBACK=1 python3 device.py ...
 ```
 
 ## License notes
-FLBench is released under Apache license v2.0. See `LICENSE` for details.
+FLEdge is released under Apache license v2.0. See `LICENSE` for details.
 All libraries used in this project are subject to their own licenses.
