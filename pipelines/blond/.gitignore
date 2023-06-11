@@ -1,0 +1,17 @@
+.idea/
+venv/
+lightning_logs/
+__pycache__/
+__MACOSX/
+data/processed/
+data/raw_data/
+.DS_Store
+
+*.zip
+*.h5
+*.json
+*.png
+*.jpg
+*.jpeg
+*.csv
+*.pyc

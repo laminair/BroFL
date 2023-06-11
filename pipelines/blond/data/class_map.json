@@ -1,0 +1,14 @@
+{
+  "Battery Charger": 0,
+  "Daylight": 1,
+  "Dev Board": 2,
+  "Fan": 3,
+  "Kettle": 4,
+  "Laptop": 5,
+  "Monitor": 6,
+  "PC": 7,
+  "Printer": 8,
+  "Projector": 9,
+  "Screen Motor": 10,
+  "USB Charger": 11
+}

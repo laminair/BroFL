@@ -1,0 +1,16 @@
+---
+# tasks file for roles/configure-orchestrator
+- name: Copy inventory files to have IP address list available on orchestrator nodes
+  copy:
+    src: "{{ item }}"
+    dest: "{{ project_path }}/automation/ansible/"
+  with_fileglob:
+    - "{{ inventory_dir }}/*.cfg"
+
+- name: Set hostkey on Orchestrator VM
+  copy:
+    src: "~/.ssh/{{ item }}"
+    dest: "~/.ssh/{{ item }}"
+  loop:
+    - id_rsa
+    - id_rsa.pub

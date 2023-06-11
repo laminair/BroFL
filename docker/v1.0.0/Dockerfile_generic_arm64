@@ -1,0 +1,27 @@
+FROM ubuntu:bionic
+
+# Basics installation
+RUN apt-get update
+RUN apt-get install software-properties-common git wget curl pkg-config -y
+
+# Package installation
+RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+RUN apt-get install git wget curl pkg-config ansible python3-virtualenv virtualenv tmux unzip libjpeg-dev libopenblas-dev libopenmpi-dev libomp-dev libsndfile1-dev build-essential libhdf5-dev python3-dev python3-pip python3-apt build-essential libhdf5-dev -y
+RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
+RUN wget --no-check-certificate -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+RUN add-apt-repository 'deb http://apt.llvm.org/bionic/   llvm-toolchain-bionic-10  main'
+RUN apt update
+RUN apt-get install llvm-10 lldb-10 llvm-10-dev libllvm10 llvm-10-runtime -y
+RUN LLVM_CONFIG=/usr/bin/llvm-config-10 pip3 install llvmlite
+
+# Install python project dependencies
+RUN pip3 install --upgrade pip wheel setuptools
+COPY requirements/requirements_ubuntu_1804_py36.txt requirements.txt
+RUN LLVM_CONFIG=/usr/bin/llvm-config-10 pip3 install -r requirements.txt --ignore-installed
+
+# Optional: Copy netrc config for W&B monitoring
+# COPY ~/.netrc .netrc
+
+# Copy project files
+WORKDIR /opt/flbench
+RUN git clone -b submission https://github.com/laminair/FLEdge.git /opt/flbench

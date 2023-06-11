@@ -1,0 +1,239 @@
+{
+  "pipelines": {
+    "tinyimagenet200": {
+      "models": {
+        "cnn": "pipelines.tinyimagenet200.models.GoogLeNet"
+      },
+      "dataloader": {
+        "path": "pipelines.tinyimagenet200.dataloader.TinyImageNetLightning",
+        "available_data_dists": ["iid", "natural_noniid"]
+      },
+      "hparams": {
+        "googlenet": {"batch_size": 64, "learning_rate": 0.001, "weight_decay": 0}
+      }
+    },
+    "blond": {
+      "models": {
+        "cnn": "pipelines.blond.models.BlondLightningCNN",
+        "lstm": "pipelines.blond.models.BlondLightningLSTM",
+        "resnet": "pipelines.blond.models.BlondLightningResNet",
+        "densenet": "pipelines.blond.models.BlondLightningDenseNet"
+      },
+      "dataloader": {
+        "path": "pipelines.blond.dataloader.BlondLightningData",
+        "available_data_dists": ["local", "iid", "dirichlet"]
+      },
+      "hparams": {
+        "cnn": {"in_features": 68, "seq_len": 190, "num_classes": 12, "out_features": 10, "num_layers": 1, "batch_size":  128, "num_workers":  4, "use_npy": true},
+        "lstm": {"in_features": 68, "seq_len": 190, "num_classes": 12, "hidden_layer_size": 15, "num_layers": 1, "batch_size":  128, "num_workers":  4, "use_npy": true},
+        "resnet": {"in_features": 68, "num_classes": 12, "out_features": 28, "num_layers": 4, "batch_size":  128, "num_workers":  4, "use_npy": true},
+        "densenet": {"in_features": 68, "num_classes": 12, "out_features": 32, "num_layers": 4, "batch_size":  128, "num_workers":  4, "use_npy": true}
+      }
+    },
+    "mnist": {
+      "models": {
+        "cnn": "pipelines.mnist.models.MNISTCNN"
+      },
+      "dataloader": {
+        "path": "pipelines.mnist.dataloader.FEMNISTLightningData",
+        "available_data_dists": ["local", "iid", "dirichlet"]
+      },
+      "hparams": {
+        "cnn": {"num_classes": 62, "batch_size": 32, "num_workers": 4}
+      }
+    },
+    "cinic10": {
+      "models": {
+        "cnn": "pipelines.cinic10.models.CINIC10LightningCNN"
+      },
+      "dataloader": {
+        "path": "pipelines.cinic10.dataloader.CINIC10LightningData",
+        "available_data_dists": ["local", "iid", "dirichlet"]
+      },
+      "hparams": {
+        "cnn": {"num_classes": 10, "batch_size": 128, "num_workers": 4}
+      }
+    },
+    "imdbreviews": {
+      "models": {
+        "lstm": "pipelines.imdbreviews.models.LightningIMDBLSTM"
+      },
+      "dataloader": {
+        "path": "pipelines.imdbreviews.dataloader.LightningIMDBLoader",
+        "available_data_dists": ["local", "iid", "dirichlet"]
+      },
+      "hparams": {
+        "lstm": {"seq_len": 200, "vocab_size":  222075, "emb_dim": 400, "output_size":  1, "hidden_dim": 256, "n_layers": 2, "dropout": 0.2, "lr": 0.001, "batch_size": 50}
+      }
+    },
+    "sentiment140": {
+      "models": {
+        "lstm": "pipelines.sentiment140.models.Sentiment140BiLSTM"
+      },
+      "dataloader": {
+        "path": "pipelines.sentiment140.dataloader.Sentiment140DataLoader",
+        "available_data_dists": ["local", "iid", "dirichlet"]
+      },
+      "hparams": {
+        "lstm": {"batch_size": 32, "seq_len": 32, "output_size":  1, "hidden_dim": 256, "n_layers": 2, "dropout": 0.2, "lr": 0.0001, "vocab_size": 372178, "emb_dim": 64}
+      }
+    },
+    "shakespeare": {
+      "models": {
+        "lstm": "pipelines.shakespeare.models.ShakespeareLSTM"
+      },
+      "dataloader": {
+        "path": "pipelines.shakespeare.dataloader.ShakespeareLightningData",
+        "available_data_dists": ["local", "iid", "dirichlet"]
+      },
+      "hparams": {
+        "lstm": {"batch_size": 32, "seq_len": 80, "vocab_size": 80, "emb_dim": 8, "hidden_dim": 256, "output_size":  90, "n_layers": 2, "lr": 0.8}
+      }
+    }
+  },
+  "federated_optimizer": {
+    "fedavg": {
+      "strategy": "modules.strategies.FedAvg",
+      "params": {
+        "fraction_fit": 0.2,
+        "fraction_evaluate": 0.2,
+        "min_available_clients": 2,
+        "evaluate_fn": null,
+        "on_fit_config_fn": null,
+        "on_evaluate_config_fn": null,
+        "accept_failures": true,
+        "initial_parameters": []
+      }
+    },
+    "fedadam": {
+      "strategy": "modules.strategies.FedAdam",
+      "params": {
+        "fraction_fit": 0.2,
+        "fraction_evaluate": 0.2,
+        "min_available_clients": 2,
+        "evaluate_fn": null,
+        "on_fit_config_fn": null,
+        "on_evaluate_config_fn": null,
+        "accept_failures": true,
+        "initial_parameters": [],
+        "eta": -1.5,
+        "eta_l": -1,
+        "beta_1": 0.9,
+        "beta_2": 0.99,
+        "tau": 1e-02
+      }
+    },
+    "fedyogi": {
+      "strategy": "modules.strategies.FedYogi",
+      "params": {
+        "fraction_fit": 0.2,
+        "fraction_evaluate": 0.2,
+        "min_available_clients": 2,
+        "evaluate_fn": null,
+        "on_fit_config_fn": null,
+        "on_evaluate_config_fn": null,
+        "accept_failures": true,
+        "initial_parameters": [],
+        "eta": -1.5,
+        "eta_l": -1.5,
+        "beta_1": 0.9,
+        "beta_2": 0.99,
+        "tau": 1e-5
+      }
+    },
+    "fedadagrad": {
+      "strategy": "modules.strategies.FedAdagrad",
+      "params": {
+        "fraction_fit": 0.2,
+        "fraction_evaluate": 0.2,
+        "min_available_clients": 2,
+        "evaluate_fn": null,
+        "on_fit_config_fn": null,
+        "on_evaluate_config_fn": null,
+        "accept_failures": true,
+        "initial_parameters": [],
+        "eta": 0,
+        "eta_l": 0,
+        "tau": 1e-03
+      }
+    },
+    "qfedavg": {
+      "strategy": "modules.strategies.QFedAvg",
+      "params": {
+        "q_param": 1,
+        "qffl_learning_rate": 0.1,
+        "fraction_fit": 0.2,
+        "fraction_evaluate": 0.2,
+        "min_available_clients": 1,
+        "evaluate_fn": null,
+        "on_fit_config_fn": null,
+        "on_evaluate_config_fn": null,
+        "accept_failures": true,
+        "initial_parameters": null
+      }
+    },
+    "fedpaq": {
+      "strategy": "modules.strategies.FedAvg",
+      "params": {
+        "fraction_fit": 0.2,
+        "fraction_evaluate": 0.2,
+        "min_available_clients": 2,
+        "evaluate_fn": null,
+        "on_fit_config_fn": null,
+        "on_evaluate_config_fn": null,
+        "accept_failures": true,
+        "initial_parameters": [],
+        "fl_client_optimizer": "modules.strategies.FedPAQ",
+        "quantization_level": 5
+      }
+    },
+    "fedprox": {
+      "strategy": "modules.strategies.FedProx",
+      "params": {
+        "fraction_fit": 0.2,
+        "fraction_evaluate": 0.2,
+        "min_available_clients": 2,
+        "evaluate_fn": null,
+        "accept_failures": true,
+        "proximal_mu": 1
+      }
+    }
+  },
+  "privacy_techniques": {
+    "differential_privacy": {
+      "user_level": {
+        "init_clip_norm": 0.1,
+        "noise_multiplier": [0, 0.3, 0.5, 1, 1.3, 1.5],
+        "server_side_noising": true,
+        "clip_norm_lr": 0.2,
+        "clip_norm_target_quantile": [0.9],
+        "delta": 0.00001
+      }
+    }
+  },
+  "auxiliary": {
+    "project_name": "flbench",
+    "logger": "wandb",
+    "wandb_entity": "herbertw",
+    "logging_freq": 1,
+    "logger_suffix": "v5",
+    "min_local_epochs": 1,
+    "max_local_epochs": 1,
+    "seed": 42,
+    "use_scapy_network_monitoring": false,
+    "fast_dev_run": false,
+    "force_accelerator_type": null,
+    "training_float_precision": 32
+  },
+  "experiment_automation": {
+    "num_devices": [45],
+    "client_dropouts_per_round": [0],
+    "experiment_repetitions": 5,
+    "inventory_source": "ansible",
+    "server_ports": [8080],
+    "tmux_session_name": "flbench",
+    "tmux_check_alive_experiment_automation_minutes": 0.5,
+    "use_differential_privacy": true,
+    "fl_training_rounds": [10]
+  }
+}
