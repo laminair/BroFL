@@ -255,7 +255,7 @@ class YourLightningDataModule(pl.LightningModule):
 ## Using FLEdge
 Our design allows to run local and federated experiments with an arbitrary number of clients and a single server endpoint.
 
-![FLEdge System Design](evaluations/paper_figures_OLD/experiment_design/220927_FL_System_Conceptual.png)
+![FLEdge System Design](evaluations/figures/system_design_conceptual.pdf)
 
 ### Running baseline experiments locally on a single device
 Running a baseline provides the best possible results of an ML pipeline and lays the ground for doing a sensitivity 

@@ -1,5 +1,5 @@
 """
-This script automates all FLBench experiments and ensures reproducibility.
+This script automates all FLEdge experiments and ensures reproducibility.
 """
 import argparse
 import datetime
@@ -22,7 +22,7 @@ class ExperimentAutomator(ExperimentAutomatorBase):
         # in the list.
         clients = []
         for group, ip_addr_list in self.inventory.items():
-            if "flbench_client" in group:
+            if "fledge_client" in group:
                 clients += ip_addr_list
 
         if self.dryrun:
@@ -123,11 +123,11 @@ class ExperimentAutomator(ExperimentAutomatorBase):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="FLBench experiment automation configuration.")
+    parser = argparse.ArgumentParser(description="FLEdge experiment automation configuration.")
     parser.add_argument("--inventory-path",
                         type=str,
                         required=False,
-                        default="/opt/flbench/automation/ansible/inventory_static.cfg")
+                        default="/opt/fledge/automation/ansible/inventory_static.cfg")
     parser.add_argument("--server-endpoint",
                         type=str,
                         required=False,

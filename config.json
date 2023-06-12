@@ -212,9 +212,9 @@
     }
   },
   "auxiliary": {
-    "project_name": "flbench",
+    "project_name": "fledge",
     "logger": "wandb",
-    "wandb_entity": "herbertw",
+    "wandb_entity": "<YOUR NAME HERE>",
     "logging_freq": 1,
     "logger_suffix": "v5",
     "min_local_epochs": 1,
@@ -231,7 +231,7 @@
     "experiment_repetitions": 5,
     "inventory_source": "ansible",
     "server_ports": [8080],
-    "tmux_session_name": "flbench",
+    "tmux_session_name": "fledge",
     "tmux_check_alive_experiment_automation_minutes": 0.5,
     "use_differential_privacy": true,
     "fl_training_rounds": [10]

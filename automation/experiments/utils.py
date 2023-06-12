@@ -1,5 +1,5 @@
 """
-This script automates all FLBench experiments and ensures reproducibility.
+This script automates all FLEdge experiments and ensures reproducibility.
 """
 import argparse
 import datetime
@@ -25,7 +25,7 @@ class ExperimentAutomatorBase(object):
 
     def __init__(self, inventory_path=None, server_endpoint=None, experiment_plan_path=None, dryrun=False):
         self.file_path = Path(os.path.dirname(os.path.realpath(__file__)))
-        self.remote_flbench_directory = "/opt/flbench"
+        self.remote_fledge_directory = "/opt/fledge"
         self.inventory_path = inventory_path
 
         # Read Pipeline Configurations
@@ -73,7 +73,7 @@ class ExperimentAutomatorBase(object):
         # in the list.
         clients = []
         for group, ip_addr_list in self.inventory.items():
-            if "flbench_client" in group:
+            if "fledge_client" in group:
                 clients += ip_addr_list
 
         if self.dryrun:
@@ -163,7 +163,7 @@ class ExperimentAutomatorBase(object):
                              fl_optimizer_index, use_dp, noise_multiplier):
 
         if pipeline == "tinyimagenet200" or pipeline == "cinic10" or pipeline == "imdbreviews" or pipeline == "sentiment140":
-            # We only experiment with MNIST (CV), BLOND (NILM), and Shakespeare (NLP) for the FLBench paper.
+            # We only experiment with MNIST (CV), BLOND (NILM), and Shakespeare (NLP) for the FLEdge paper.
             return True
 
         if optimizer == "fedpaq":
@@ -249,14 +249,14 @@ class ExperimentAutomatorBase(object):
         if "raspi" in client_ip or "inventory.static" in experiment_name:
             # We need this to avoid a Memory allocation error on AARCH64 devices.
             # See: https://github.com/opencv/opencv/issues/14884 & https://stackoverflow.com/q/67735216
-            command_addon = f"LD_PRELOAD='/opt/flbench/venv/lib/python3.9/site-packages/scikit_learn.libs/" \
+            command_addon = f"LD_PRELOAD='/opt/fledge/venv/lib/python3.9/site-packages/scikit_learn.libs/" \
                             f"libgomp-d22c30c5.so.1.0.0'"
         else:
             command_addon = ""
 
         # We run our venv python with sudo rights to allow scapy network traffic monitoring.
-        command = f"{command_addon} {self.remote_flbench_directory}/venv/bin/python3 " \
-                  f"{self.remote_flbench_directory}/device.py "
+        command = f"{command_addon} {self.remote_fledge_directory}/venv/bin/python3 " \
+                  f"{self.remote_fledge_directory}/device.py "
 
         if data_dist == "local":
             # We only send a configuration to clients if they train the local baseline.
@@ -303,7 +303,7 @@ class ExperimentAutomatorBase(object):
                       fl_strategy, dp_noise_multiplier, experiment_name):
         # server_port = self.set_fl_server_port()
         server_ip = self.server_endpoint.split(":")[0]
-        command = f"{self.remote_flbench_directory}/venv/bin/python3 {self.remote_flbench_directory}/server.py " \
+        command = f"{self.remote_fledge_directory}/venv/bin/python3 {self.remote_fledge_directory}/server.py " \
                   f"--pipeline {pipeline} " \
                   f"--ml-model {ml_model} " \
                   f"--data-dist {data_dist} " \
@@ -431,10 +431,10 @@ class ExperimentAutomatorBase(object):
             dropout_rate = dropout_rate.replace(".", "")
 
         # The missing underscore is intentional. See inventory_name preprocessing above.
-        return f"{timestamp}_flbench{inventory_name}_{pipeline}_{ml_model}_{optimizer}_{data_dist}_{training_rounds}_" \
+        return f"{timestamp}_fledge{inventory_name}_{pipeline}_{ml_model}_{optimizer}_{data_dist}_{training_rounds}_" \
                f"rounds_{num_clients}_clients_{dropout_rate}_dropout_{use_dp}_{noise_multiplier}"
 
-    def check_if_tmux_session_is_alive(self, node, target_session="flbench"):
+    def check_if_tmux_session_is_alive(self, node, target_session="fledge"):
         """
         This method checks if the session for running an experiment is still active on a remote client. It returns once
         it receives a "no server running on..." error message (str) incl. error status 1. The request is timed every 30
@@ -484,7 +484,7 @@ class ExperimentAutomatorBase(object):
 
     def update_git_on_client(self, node):
         print(f"Starting git update on {node}")
-        command = f"cd {self.remote_flbench_directory}/ && /usr/bin/git pull --recurse-submodules\n"
+        command = f"cd {self.remote_fledge_directory}/ && /usr/bin/git pull --recurse-submodules\n"
         status = self.send_client_command(node=node, cmd=command)
 
         print(f"Updated Git repository on node {node} with exit status {status}.")
