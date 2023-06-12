@@ -183,6 +183,7 @@ class BlondLightningCNN(pl.LightningModule):
             out_features = int(out_features * 1.5)
 
         self.classifier = BlondNetMLP(seq_len, in_features, num_classes, max(1, int(num_layers / 2)), seq_len_adj=seq_len_adj)
+        self.optim = torch.optim.SGD(lr=0.055, weight_decay=0, params=self.parameters())
 
         # Metrics
         self.criterion = F.cross_entropy
@@ -226,7 +227,7 @@ class BlondLightningCNN(pl.LightningModule):
             pass
 
     def configure_optimizers(self):
-        return torch.optim.SGD(lr=0.052, weight_decay=0.001, params=self.parameters())
+        return self.optim
 
     def optimizer_step(self, epoch: int, batch_idx: int, optimizer, optimizer_idx: int = 0, optimizer_closure=None,
                        on_tpu: bool = False, using_lbfgs: bool = False, *args, **kwargs) -> None:
@@ -333,7 +334,7 @@ class BlondLightningLSTM(BLONDLightningBase):
                                       seq_len_adj=self.seq_len_adj
                                       )
 
-        self.optim = torch.optim.SGD(lr=0.052, weight_decay=0.001, params=self.parameters())
+        self.optim = torch.optim.SGD(lr=0.045, weight_decay=0.001, params=self.parameters())
         self.criterion = F.cross_entropy
 
     def forward(self, x):
@@ -458,7 +459,7 @@ class BlondLightningDenseNet(BLONDLightningBase):
         self.global_avg = nn.AdaptiveAvgPool1d(1)
         self.classifier = BlondNetMLP(1, in_features + 2 * out_features, self.config["num_classes"],
                                       max(1, int(self.config["num_layers"] / 2)))
-        self.optim = torch.optim.SGD(lr=0.052, weight_decay=0.001, params=self.parameters())
+        self.optim = torch.optim.SGD(lr=0.075, weight_decay=0.001, params=self.parameters())
 
         self.criterion = F.cross_entropy
         self.acc = torchmetrics.Accuracy(task="multiclass", num_classes=self.config["num_classes"])
