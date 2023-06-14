@@ -3,16 +3,17 @@ FLEdge provides a modular toolkit for quickly building and evaluating federated 
 environments.
 
 ## Resources
-TBA
+All datasets have been pre-sampled and can be downloaded from [LRZ Sync & Share](https://syncandshare.lrz.de/getlink/fi8NCT2xSFPnzkuVdDoN8D/presampled_45_clients).
 
 ## Reference implementations
 FLEdge provides three reference implementations from different fields of application.
 
-| **#** | **Use case** | **Dataset**                                                                                 | **Model architecture**      | **Source**                                                                                                            | **Pipeline**     | **ML Models**                        |
-|-------|--------------|---------------------------------------------------------------------------------------------|-----------------------------|-----------------------------------------------------------------------------------------------------------------------|------------------|--------------------------------------|
-| 1     | NILM         | [BLOND](https://www.nature.com/articles/sdata201848)                                        | CNN, LSTM, ResNet, DenseNet | [Schwermer et al.](https://dl.acm.org/doi/abs/10.1145/3538637.3538845)                                                | `blond`          | `cnn`, `lstm`, `resnet`, `densenet`  |
-| 2     | CV           | [FEMNIST](https://www.nist.gov/itl/products-and-services/emnist-dataset)                    | CNN                         | [Cohen et al.](https://arxiv.org/abs/1702.05373v1)                                                                    | `femnist`        | `cnn`                                |
-| 3     | NLP          | [Shakespeare Next Character Prediction](https://www.gutenberg.org/cache/epub/100/pg100.txt) | LSTM                        | [LEAF Benchmark](https://leaf.cmu.edu/)                                                                               | `shakespeare`    | `lstm`                               |
+| **#** | **Use case** | **Dataset**                                                                                 | **Model architecture**      | **Source**                                                             | **Pipeline**   | **ML Models**                       |
+|-------|--------------|---------------------------------------------------------------------------------------------|-----------------------------|------------------------------------------------------------------------|----------------|-------------------------------------|
+| 1     | NILM         | [BLOND](https://www.nature.com/articles/sdata201848)                                        | CNN, LSTM, ResNet, DenseNet | [Schwermer et al.](https://dl.acm.org/doi/abs/10.1145/3538637.3538845) | `blond`        | `cnn`, `lstm`, `resnet`, `densenet` |
+| 2     | CV           | [FEMNIST](https://www.nist.gov/itl/products-and-services/emnist-dataset)                    | CNN                         | [Cohen et al.](https://arxiv.org/abs/1702.05373v1)                     | `femnist`      | `cnn`                               |
+| 3     | NLP          | [Shakespeare Next Character Prediction](https://www.gutenberg.org/cache/epub/100/pg100.txt) | LSTM                        | [LEAF Benchmark](https://leaf.cmu.edu/)                                | `shakespeare`  | `lstm`                              |
+| 4     | NLP          | [Samsum](https://arxiv.org/abs/1911.12237v2)                                                | FLAN-T5                     | [Huggingface](https://huggingface.co/google/flan-t5-small)             | `samsum`       | `flant5`                            | 
 
 **Note:** In the actual system the pipelines are .git submodules. For the submission, we included the three reference implementations directly.
 

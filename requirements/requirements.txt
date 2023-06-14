@@ -37,12 +37,14 @@ confection==0.0.4
 cryptography==39.0.2
 cymem==2.0.7
 dataclasses==0.6
+datasets==3.0.0
 debugpy==1.6.7
 decorator==5.1.1
 defusedxml==0.7.1
 distlib==0.3.6
 docker-pycreds==0.4.0
 en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0-py3-none-any.whl#sha256=0964370218b7e1672a30ac50d72cdc6b16f7c867496f1d60925691188f4d2510
+evaluate==0.4.3
 executing==1.2.0
 fastjsonschema==2.16.3
 filelock==3.12.0
@@ -110,6 +112,7 @@ nbconvert==7.3.1
 nbformat==5.8.0
 nest-asyncio==1.5.6
 networkx==3.1
+nltk==3.9.1
 notebook==6.5.4
 notebook_shim==0.2.2
 numba==0.56.4
@@ -172,6 +175,7 @@ resampy==0.4.2
 resolvelib==0.8.0
 rfc3339-validator==0.1.4
 rfc3986-validator==0.1.1
+rouge_score==0.1.2
 rsa==4.9
 scapy==2.5.0
 scikit-learn==1.2.2

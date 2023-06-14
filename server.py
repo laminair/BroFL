@@ -5,7 +5,7 @@ import os
 import flwr as fl
 import pytorch_lightning as pl
 import torch
-
+import numpy as np
 import json
 import argparse
 import random
@@ -412,11 +412,9 @@ class FLBenchServer(object):
         dropout_threshold = config["client_dropouts"]
         n_clients = config["n_clients"]
 
-        dropout_index = [1 if idx < dropout_threshold else 0 for idx in range(n_clients)]
         for rnd in range(config["training_rounds"]):
-            random.shuffle(dropout_index)
             # Flower starts FL round increments at 1, not 0.
-            dropout_dict[rnd + 1] = dropout_index
+            dropout_dict[rnd + 1] = np.random.binomial([dropout_threshold for _ in range(n_clients)])
 
         return dropout_dict
 

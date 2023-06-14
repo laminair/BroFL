@@ -13,6 +13,7 @@ import wandb
 import flwr as fl
 
 from pathlib import Path
+from pytorch_lightning.profilers import PyTorchProfiler
 from utils.init_device import return_class_from_pythonic_string as load_class
 from utils.logger import init_logger, get_ip_address
 from modules.monitoring.monitor import HWMonitor
@@ -123,8 +124,6 @@ class FLBenchDevice(fl.client.NumPyClient):
         # At this point, we are ready to start training.
         if config["should_dropout"] > 0 or config["should_dropout"] is True:
             # We return nothing as the client failed... This terminates the process immediately.
-            # We need the trainloader init for the len_trainset variable to be loaded.
-            self.dataloader.train_dataloader()
             return
 
         start_time = datetime.datetime.now()
@@ -312,7 +311,7 @@ class FLBenchDevice(fl.client.NumPyClient):
         except:
             mps = False
 
-        # Determine the device accelerator
+        # Configure the device accelerator
         if config["logger"]["force_accelerator_type"]:
             accelerator = config["logger"]["force_accelerator_type"]
             devices = 1
@@ -327,6 +326,30 @@ class FLBenchDevice(fl.client.NumPyClient):
             accelerator = "cpu"
             devices = 1
 
+        # Configure the profiler
+        if config["trainer"]["profiler_type"] == "pytorch_nsys":
+            """
+            If you wish to use the nsight systems profiler, you need to run the device.py file with the 
+            following command:
+                
+                nsys profile \
+                    -w true \
+                    -t cuda,nvtx,osrt,cudnn,cublas \
+                    -s cpu \
+                    --capture-range=cudaProfilerApi \
+                    --stop-on-range-end=true \
+                    --cudabacktrace=true \
+                    -x true \
+                    -o perf-profile \
+                    python3 device.py ...
+                
+            """
+            profiler = PyTorchProfiler(filename=config["trainer"]["profiler_output_file_name"], emit_nvtx=True)
+        elif config["trainer"]["profiler_type"] == "pytorch_simple":
+            profiler = PyTorchProfiler(filename=config["trainer"]["profiler_output_file_name"])
+        else:
+            profiler = None
+
         self.trainer = pl.Trainer(
             accelerator=accelerator,
             devices=devices,
@@ -337,7 +360,8 @@ class FLBenchDevice(fl.client.NumPyClient):
             max_epochs=config["logger"]["max_local_epochs"],
             fast_dev_run=config["logger"]["fast_dev_run"],
             callbacks=[progbar],  # , dp_callback
-            precision=config["trainer"]["precision"]
+            precision=config["trainer"]["precision"],
+            profiler=profiler
         )
 
     def init_client(self, config=None) -> dict:
@@ -406,7 +430,9 @@ class FLBenchDevice(fl.client.NumPyClient):
                 "max_local_epochs": project_cfg["auxiliary"]["max_local_epochs"],
                 "fast_dev_run": project_cfg["auxiliary"]["fast_dev_run"],
                 "force_accelerator_type": project_cfg["auxiliary"]["force_accelerator_type"],
-                "precision": project_cfg["auxiliary"]["training_float_precision"]
+                "precision": project_cfg["auxiliary"]["training_float_precision"],
+                "profiler_type": project_cfg["auxiliary"]["profiler_type"],
+                "profiler_output_file_name": project_cfg["auxiliary"]["profiler_output_file_name"],
             }
         })
 
