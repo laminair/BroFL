@@ -408,7 +408,7 @@ class BlondResNetLayer(nn.Module):
             self.skip_connection = nn.Sequential(
                 nn.Conv1d(in_features, out_features, kernel_size=1, stride=1, padding=0),
                 nn.BatchNorm1d(out_features, track_running_stats=False),
-            )  # Swap BatchNorm1d for GroupNorm
+            )
 
         self.layer = nn.Sequential(
             nn.Conv1d(in_features, out_features, kernel_size=3, stride=1, padding=1),

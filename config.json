@@ -87,7 +87,7 @@
         "available_data_dists": ["local", "iid", "dirichlet"]
       },
       "hparams": {
-        "lstm": {"batch_size": 32, "seq_len": 80, "vocab_size": 80, "emb_dim": 8, "hidden_dim": 256, "output_size":  90, "n_layers": 2, "lr": 0.8}
+        "lstm": {"batch_size": 32, "seq_len": 80, "vocab_size": 80, "emb_dim": 8, "hidden_dim": 256, "n_layers": 2, "lr": 0.8}
       }
     }
   },
