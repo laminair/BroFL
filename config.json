@@ -91,6 +91,15 @@
       }
     }
   },
+  "samsum": {
+    "models": {"flant5":  "pipelines.samsum.models.FlanT5Lightning"},
+    "dataloader": {"path": "pipelines.samsum.models.dataloader.SamsumLightningData",
+      "available_data_dists": ["local", "dirichlet"]
+    },
+    "hparams": {
+        "flant5": {}
+      }
+  },
   "federated_optimizer": {
     "fedavg": {
       "strategy": "modules.strategies.FedAvg",
