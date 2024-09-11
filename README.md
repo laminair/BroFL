@@ -3,7 +3,7 @@ FLEdge provides a modular toolkit for quickly building and evaluating federated 
 environments.
 
 ## Resources
-TBA
+All datasets have been pre-sampled and can be downloaded from [LRZ Sync & Share](https://syncandshare.lrz.de/getlink/fi8NCT2xSFPnzkuVdDoN8D/presampled_45_clients).
 
 ## Reference implementations
 FLEdge provides three reference implementations from different fields of application.

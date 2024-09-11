@@ -130,7 +130,7 @@
 
 - name: Install FLEdge
   git:
-    repo: "https://{{ git_repo }}"
+    repo: "{{ git_repo }}"
     dest: "{{ project_path }}"
     version: "submission"
     clone: true
