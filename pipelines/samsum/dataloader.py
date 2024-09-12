@@ -16,8 +16,8 @@ FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 class SamsumLightningData(pl.LightningDataModule):
 
-    def __init__(self, tokenizer, model_name, batch_size, data_dist, client_id, source_len: int = 512, target_len: int = 95,
-                 label_pad_token_id: int = -100, *args, **kwargs):
+    def __init__(self, tokenizer, model_name, batch_size, data_dist, client_id, source_len: int = 512,
+                 target_len: int = 95, label_pad_token_id: int = -100, *args, **kwargs):
         super(SamsumLightningData, self).__init__()
 
         self.batch_size = batch_size

@@ -89,17 +89,18 @@
       "hparams": {
         "lstm": {"batch_size": 32, "seq_len": 80, "vocab_size": 80, "emb_dim": 8, "hidden_dim": 256, "n_layers": 2, "lr": 0.8}
       }
+    },
+    "samsum": {
+      "models": {"flant5":  "pipelines.samsum.models.FlanT5Lightning"},
+      "dataloader": {"path": "pipelines.samsum.models.dataloader.SamsumLightningData",
+        "available_data_dists": ["local", "dirichlet"]
+      },
+      "hparams": {
+          "flant5": {"batch_size":  1}
+        }
     }
   },
-  "samsum": {
-    "models": {"flant5":  "pipelines.samsum.models.FlanT5Lightning"},
-    "dataloader": {"path": "pipelines.samsum.models.dataloader.SamsumLightningData",
-      "available_data_dists": ["local", "dirichlet"]
-    },
-    "hparams": {
-        "flant5": {}
-      }
-  },
+
   "federated_optimizer": {
     "fedavg": {
       "strategy": "modules.strategies.FedAvg",
@@ -232,7 +233,9 @@
     "use_scapy_network_monitoring": false,
     "fast_dev_run": false,
     "force_accelerator_type": null,
-    "training_float_precision": 32
+    "training_float_precision": 32,
+    "profiler_type": "pytorch_nsys",
+    "profiler_output_file_name": "perf-logs"
   },
   "experiment_automation": {
     "num_devices": [45],
