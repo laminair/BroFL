@@ -27,9 +27,9 @@ class FLEdgeLightningBase(pl.LightningModule):
         self.criterion = None
         self.optim = None
 
-        # if "model_name" not in self.config.keys() or "t5" not in self.config["model_name"]:
-        self.acc = torchmetrics.Accuracy(task="multiclass", num_classes=self.config["num_classes"])
-        self.f1 = torchmetrics.F1Score(task="multiclass", num_classes=self.config["num_classes"])
+        if "model_name" not in self.config.keys() or "t5" not in self.config["model_name"]:
+            self.acc = torchmetrics.Accuracy(task="multiclass", num_classes=self.config["num_classes"])
+            self.f1 = torchmetrics.F1Score(task="multiclass", num_classes=self.config["num_classes"])
 
         # Timing
         self.batch_load_time_start = time.time()
