@@ -14,8 +14,7 @@ class FlanT5Lightning(FLEdgeLightningBase):
 
     def __init__(self, *args, **kwargs):
         super(FlanT5Lightning, self).__init__(*args, **kwargs)
-        model_name = self.config["model_name"]
-        self.model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(self.device)
+        self.model = AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-small").to(self.device)
 
         self.tokenizer = self.tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-base")
         self.optim = AdamW(self.model.parameters(), lr=0.0001)
