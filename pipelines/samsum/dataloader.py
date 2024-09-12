@@ -20,7 +20,7 @@ FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 class SamsumLightningData(pl.LightningDataModule):
 
-    def __init__(self, model_name, batch_size, data_dist, client_id, source_len: int = 512,
+    def __init__(self, batch_size, data_dist, client_id, source_len: int = 512,
                  target_len: int = 95, label_pad_token_id: int = -100, *args, **kwargs):
         super(SamsumLightningData, self).__init__()
 
@@ -41,7 +41,7 @@ class SamsumLightningData(pl.LightningDataModule):
         # Data collator
         self.data_collator = DataCollatorForSeq2Seq(
             self.tokenizer,
-            model=AutoModelForSeq2SeqLM.from_pretrained(model_name),
+            model=AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-small"),
             label_pad_token_id=self.label_pad_token_id,
             pad_to_multiple_of=8
         )
