@@ -222,9 +222,9 @@
     }
   },
   "auxiliary": {
-    "project_name": "fledge",
+    "project_name": "fledge_profile",
     "logger": "wandb",
-    "wandb_entity": "<YOUR NAME HERE>",
+    "wandb_entity": "herbertw",
     "logging_freq": 1,
     "logger_suffix": "v5",
     "min_local_epochs": 1,
