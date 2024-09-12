@@ -92,7 +92,7 @@
     },
     "samsum": {
       "models": {"flant5":  "pipelines.samsum.models.FlanT5Lightning"},
-      "dataloader": {"path": "pipelines.samsum.models.dataloader.SamsumLightningData",
+      "dataloader": {"path": "pipelines.samsum.dataloader.SamsumLightningData",
         "available_data_dists": ["local", "dirichlet"]
       },
       "hparams": {
