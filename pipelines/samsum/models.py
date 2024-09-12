@@ -6,7 +6,7 @@ from torchmetrics.text.rouge import ROUGEScore
 from transformers import AutoModelForSeq2SeqLM
 
 from pipelines.lightning_base_class import FLEdgeLightningBase
-from pipelines.flan_t5_dialogue_summarization.utils import compute_rogue
+from pipelines.samsum.utils import compute_rogue
 
 
 class FlanT5Lightning(FLEdgeLightningBase):
