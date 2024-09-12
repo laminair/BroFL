@@ -27,9 +27,9 @@ class FLEdgeLightningBase(pl.LightningModule):
         self.criterion = None
         self.optim = None
 
-        if "model_name" not in self.config.keys() or "t5" not in self.config["model_name"]:
-            self.acc = torchmetrics.Accuracy(task="multiclass", num_classes=self.config["num_classes"])
-            self.f1 = torchmetrics.F1Score(task="multiclass", num_classes=self.config["num_classes"])
+        # if "model_name" not in self.config.keys() or "t5" not in self.config["model_name"]:
+        #     self.acc = torchmetrics.Accuracy(task="multiclass", num_classes=self.config["num_classes"])
+        #     self.f1 = torchmetrics.F1Score(task="multiclass", num_classes=self.config["num_classes"])
 
         # Timing
         self.batch_load_time_start = time.time()
@@ -61,37 +61,37 @@ class FLEdgeLightningBase(pl.LightningModule):
     def validation_epoch_end(self, outputs):
         super().validation_epoch_end(outputs)
 
-    def test_epoch_end(self, outputs) -> None:
-        acc_list = []
-        loss_list = []
-        for el in outputs:
-            try:
-                acc_list.append(el["accuracy"])
-            except KeyError:
-                pass
-
-            try:
-                loss_list.append(el["loss"])
-            except KeyError:
-                pass
-
-        if len(acc_list) > 0:
-            acc = torch.mean(torch.stack(acc_list)).item()
-        else:
-            acc = 0
-
-        if len(loss_list) > 0:
-            loss = torch.mean(torch.stack(loss_list)).item()
-        else:
-            loss = 1000
-
-        try:
-            self.logger.log_metrics({
-                "test/accuracy": acc,
-                "test/loss": loss
-            })
-        except AttributeError:
-            pass
+    # def test_epoch_end(self, outputs) -> None:
+    #     acc_list = []
+    #     loss_list = []
+    #     for el in outputs:
+    #         try:
+    #             acc_list.append(el["accuracy"])
+    #         except KeyError:
+    #             pass
+    #
+    #         try:
+    #             loss_list.append(el["loss"])
+    #         except KeyError:
+    #             pass
+    #
+    #     if len(acc_list) > 0:
+    #         acc = torch.mean(torch.stack(acc_list)).item()
+    #     else:
+    #         acc = 0
+    #
+    #     if len(loss_list) > 0:
+    #         loss = torch.mean(torch.stack(loss_list)).item()
+    #     else:
+    #         loss = 1000
+    #
+    #     try:
+    #         self.logger.log_metrics({
+    #             "test/accuracy": acc,
+    #             "test/loss": loss
+    #         })
+    #     except AttributeError:
+    #         pass
 
     def configure_optimizers(self):
         return self.optim
