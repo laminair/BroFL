@@ -4,6 +4,7 @@ from torch.optim import AdamW
 from torch.optim.lr_scheduler import StepLR
 from torchmetrics.text.rouge import ROUGEScore
 from transformers import AutoModelForSeq2SeqLM
+from transformers import AutoTokenizer
 
 from pipelines.lightning_base_class import FLEdgeLightningBase
 from pipelines.samsum.utils import compute_rogue
@@ -11,12 +12,12 @@ from pipelines.samsum.utils import compute_rogue
 
 class FlanT5Lightning(FLEdgeLightningBase):
 
-    def __init__(self, tokenizer, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(FlanT5Lightning, self).__init__(*args, **kwargs)
         model_name = self.config["model_name"]
         self.model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(self.device)
 
-        self.tokenizer = tokenizer
+        self.tokenizer = self.tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-base")
         self.optim = AdamW(self.model.parameters(), lr=0.0001)
 
         # Scoring

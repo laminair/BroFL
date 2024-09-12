@@ -9,6 +9,10 @@ from transformers import AutoTokenizer, DataCollatorForSeq2Seq, AutoModelForSeq2
 from random import randrange
 from datasets import concatenate_datasets
 
+# Disable warning from the transformer library.
+os.environ["TRANSFORMERS_NO_ADVISORY_WARNINGS"] = "true"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 
 WORKER_COUNT = 12
 FILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -16,7 +20,7 @@ FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 class SamsumLightningData(pl.LightningDataModule):
 
-    def __init__(self, tokenizer, model_name, batch_size, data_dist, client_id, source_len: int = 512,
+    def __init__(self, model_name, batch_size, data_dist, client_id, source_len: int = 512,
                  target_len: int = 95, label_pad_token_id: int = -100, *args, **kwargs):
         super(SamsumLightningData, self).__init__()
 
@@ -27,7 +31,7 @@ class SamsumLightningData(pl.LightningDataModule):
         self.source_len = source_len
         self.target_len = target_len
         self.label_pad_token_id = label_pad_token_id
-        self.tokenizer = tokenizer
+        self.tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-base")
         # self.model = model
 
         self.trainset = self.get_dataset(client_id=self.client_id, data_dist=self.data_dist, split="train")
