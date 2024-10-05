@@ -124,8 +124,6 @@ class FLBenchDevice(fl.client.NumPyClient):
         # At this point, we are ready to start training.
         if config["should_dropout"] > 0 or config["should_dropout"] is True:
             # We return nothing as the client failed... This terminates the process immediately.
-            # We need the trainloader init for the len_trainset variable to be loaded.
-            self.dataloader.train_dataloader()
             return
 
         start_time = datetime.datetime.now()
