@@ -1,0 +1,18 @@
+---
+# tasks file for teardown
+- name: Delete project directory (incl. datasets, virtualenv)
+  file:
+    path: "{{ project_path }}"
+    state: absent
+  become: true
+
+- name: Remove .netrc file from hosts (in case you were using W&B)
+  file:
+    path: ~/.netrc
+    state: absent
+
+- name: Remove .netrc file from hosts (in case you were using W&B)
+  file:
+    path: /root/.netrc
+    state: absent
+  become: true

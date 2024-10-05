@@ -1,0 +1,33 @@
+FROM pytorch/pytorch:1.10.0-cuda11.3-cudnn8-runtime
+
+# Fix GPG Key issue as Nvidia rotated their GPG keys
+RUN apt-get update
+RUN apt-get install -y gnupg gnupg2 || true
+RUN apt-key del A4B469963BF863CC
+RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+
+# Basics installation
+RUN apt-get update
+RUN apt-get install software-properties-common git wget curl pkg-config -y
+
+# Package installation
+RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+RUN apt-get install git wget curl pkg-config ansible python3-virtualenv virtualenv tmux unzip libjpeg-dev libopenblas-dev libopenmpi-dev libomp-dev libsndfile1-dev build-essential libhdf5-dev python3-apt build-essential libhdf5-dev -y
+RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
+RUN wget --no-check-certificate -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+RUN add-apt-repository 'deb http://apt.llvm.org/bionic/   llvm-toolchain-bionic-10  main'
+RUN apt update
+RUN apt-get install llvm-10 lldb-10 llvm-10-dev libllvm10 llvm-10-runtime -y
+RUN LLVM_CONFIG=/usr/bin/llvm-config-10 pip3 install llvmlite
+
+# Install python project dependencies
+RUN pip3 install --upgrade pip wheel setuptools
+COPY requirements/requirements_ubuntu_1804_py36.txt requirements.txt
+RUN LLVM_CONFIG=/usr/bin/llvm-config-10 pip3 install -r requirements.txt --ignore-installed
+
+# Optional: Copy netrc config for W&B monitoring
+# COPY ~/.netrc .netrc
+
+# Copy project files
+WORKDIR /opt/flbench
+RUN git clone -b submission --recurse-submodules https://github.com/laminair/FLEdge.git /opt/flbench

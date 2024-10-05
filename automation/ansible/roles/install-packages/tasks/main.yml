@@ -1,0 +1,177 @@
+---
+# tasks file for install-packages
+#- name: Reboot VMs
+#  reboot:
+#  become: true
+- name: Update system
+  apt:
+    update_cache: true
+    upgrade: true
+  become: true
+
+- name: Install SSH config for FLEdge deployment
+  copy:
+    src: .ssh/config
+    dest: ~/.ssh/config
+    mode: "0600"
+
+- name: Install relevant APT packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: true
+  become: true
+  loop:
+    - software-properties-common
+
+- name: Add deadsnakes repo for python 3.9
+  apt_repository:
+    repo: ppa:deadsnakes/ppa
+    state: present
+  become: true
+
+- name: Install relevant APT packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: true
+  become: true
+  loop:
+    - git
+    - wget
+    - curl
+    - pkg-config
+    - ansible
+    - python3-virtualenv
+    - virtualenv
+    - tmux
+    - unzip
+    - libjpeg-dev
+    - libopenblas-dev
+    - libopenmpi-dev
+    - libomp-dev
+    - libsndfile1-dev
+    - build-essential
+    - libhdf5-dev
+    - python3.9-dev
+    - python3-pip
+    - python3-apt
+    - python3.9-distutils
+    - postgresql-client-12
+    - libpq-dev
+
+- name: Download rust installer
+  get_url:
+    url: https://sh.rustup.rs
+    dest: /tmp/sh.rustup.rs
+    mode: '0755'
+    force: 'yes'
+  become: true
+  tags:
+    - rust
+
+- name: Install rust
+  shell: /tmp/sh.rustup.rs -y
+  become: true
+  tags:
+    - rust
+
+- name: Symlink xlocale.h to locale.h
+  file:
+    src: /usr/include/locale.h
+    dest: /usr/include/xlocale.h
+    owner: root
+    state: link
+  become: true
+
+- name: Download libffi6 for systems newer than Ubuntu 18.04 LTS (AMD64)
+  apt:
+    deb: http://archive.ubuntu.com/ubuntu/pool/main/libf/libffi/libffi6_3.2.1-8_amd64.deb
+    state: present
+  become: true
+  when: ansible_facts['lsb']['release'] != "18.04"
+  ignore_errors: true
+
+- name: Download libffi6 for systems newer than Ubuntu 18.04 LTS (ARM64)
+  apt:
+    deb: http://ports.ubuntu.com/pool/main/libf/libffi/libffi6_3.2.1-8_arm64.deb
+    state: present
+  become: true
+  when: ansible_facts['lsb']['release'] != "18.04"
+  ignore_errors: true
+
+- name: Add LLVM APT key
+  apt_key:
+    url: https://apt.llvm.org/llvm-snapshot.gpg.key
+    state: present
+    validate_certs: false
+  become: true
+
+- name: Install LLVM 10
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  become: true
+  loop:
+    - llvm-10
+    - lldb-10
+    - llvm-10-dev
+    - libllvm10
+    - llvm-10-runtime
+
+- name: Install LLVMlite
+  shell: "LLVM_CONFIG={{ LLVM_CONFIG }} pip3 install llvmlite"
+  become: true
+
+- name: Update pip to the latest version (Python 3.9)
+  shell: "curl -sS https://bootstrap.pypa.io/get-pip.py | sudo -H /usr/bin/python3.9"
+  become: true
+
+- name: Install FLEdge
+  git:
+    repo: "{{ git_repo }}"
+    dest: "{{ project_path }}"
+    version: "submission"
+    clone: true
+    update: true
+    recursive: true
+    force: true
+  become: true
+
+- name: Update existing submodules and init new ones in case they exist
+  shell: "cd {{ project_path }} && git submodule update --init"
+  become: true
+
+- name: Set FLEdge directory ownership
+  file:
+    path: "{{ project_path }}"
+    owner: "{{ ansible_user_id }}"
+    group: sudo
+    mode: 0774
+    recurse: true
+  become: true
+
+- name: Create virtualenv
+  shell: "virtualenv -p /usr/bin/python3.9 {{ project_path }}/venv"
+
+- name: Update pip to the latest version (Python 3.9 virtualenv)
+  shell: "curl -sS https://bootstrap.pypa.io/get-pip.py | {{ project_path }}/venv/bin/python3"
+
+- name: Install FLEdge requirements
+  shell: "{{ project_path }}/venv/bin/python3 -m pip install -r {{ project_path }}/requirements/requirements.txt --no-cache-dir"
+
+- name: Install .netrc file for WandB monitoring (make sure you have it in your local home directory)
+  copy:
+    src: ~/.netrc
+    dest: ~/.netrc
+    mode: 0600
+
+- name: Set "nopasswd" option in sudoers file for "sudo" group
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+  become: true

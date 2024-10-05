@@ -1,0 +1,16 @@
+.idea/
+venv/
+lightning_logs/
+MNIST/
+wandb/
+fed_mnist/
+__pycache__/
+__MACOSX/
+data/processed/
+data/raw_data/
+data/.DS_Store/
+.DS_Store/
+
+*.zip
+*.json
+*.csv

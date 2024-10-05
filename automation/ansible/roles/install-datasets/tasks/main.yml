@@ -1,0 +1,50 @@
+---
+# tasks file for install-datasets
+- name: Install .netrc file for WandB monitoring (from your local machine)
+  copy:
+    src: ~/.netrc
+    dest: ~/.netrc
+    mode: 0600
+
+- name: Install .netrc file for WandB monitoring (from your local machine)
+  copy:
+    src: ~/.netrc
+    dest: /root/.netrc
+    mode: 0600
+  become: true
+
+- name: Check if BLOND dataset has been downloaded before
+  stat:
+    path: "{{ project_path }}/pipelines/blond/data/raw_data"
+  register: blond_downloaded
+
+- name: Check if EMNIST dataset has been downloaded before
+  stat:
+    path: "{{ project_path }}/pipelines/mnist/data/raw_data"
+  register: mnist_downloaded
+
+- name: Check if Shakespeare dataset has been downloaded before
+  stat:
+    path: "{{ project_path }}/pipelines/shakespeare/data/processed"
+  register: shakespeare_downloaded
+
+- name: Download & install BLOND dataset (pre-sampled for FLEdge)
+  unarchive:
+    src: "{{ blond_url }}"
+    dest: "{{ project_path }}/pipelines/blond/data"
+    remote_src: yes
+  when: not blond_downloaded.stat.exists
+
+- name: Download & install EMNIST dataset (pre-sampled for FLEdge)
+  unarchive:
+    src: "{{ mnist_url }}"
+    dest: "{{ project_path }}/pipelines/mnist/data"
+    remote_src: yes
+  when: not mnist_downloaded.stat.exists
+
+- name: Download & install Shakespeare dataset (pre-sampled for FLEdge)
+  unarchive:
+    src: "{{ shakespeare_url }}"
+    dest: "{{ project_path }}/pipelines/shakespeare/data"
+    remote_src: yes
+  when: not shakespeare_downloaded.stat.exists

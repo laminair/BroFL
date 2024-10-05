@@ -1,0 +1,14 @@
+[flbench_client_vm]
+%{ for index, group in flbench_clients ~}
+${flbench_clients[index]}
+%{ endfor ~}
+
+[flbench_server]
+%{ for index, group in flbench_server ~}
+${flbench_server[index]}
+%{ endfor ~}
+
+[flbench_orchestrator]
+%{ for index, group in flbench_orchestrator ~}
+${flbench_orchestrator[index]}
+%{ endfor ~}

@@ -1,0 +1,43 @@
+FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
+
+# Basics installation
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install software-properties-common git wget curl pkg-config -y
+
+# Additional repo for python 3.10
+RUN add-apt-repository ppa:deadsnakes/ppa
+RUN apt-get update
+
+# Package installation
+RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+RUN DEBIAN_FRONTEND=noninteractive apt-get install git wget curl pkg-config ansible python3-virtualenv virtualenv tmux unzip libjpeg-dev libopenblas-dev libopenmpi-dev libomp-dev libsndfile1-dev build-essential libhdf5-dev python3.9-dev python3-pip python3-apt python3.9-distutils build-essential libhdf5-dev -y
+RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
+
+# install libffi
+RUN mkdir -p work
+WORKDIR work/
+RUN wget -r http://archive.ubuntu.com/ubuntu/pool/main/libf/libffi/libffi6_3.2.1-8_amd64.deb && dpkg -i libffi6_3.2.1-8_amd64.deb || true
+
+# Install LLVM 10
+RUN wget --no-check-certificate -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+# RUN add-apt-repository 'deb http://apt.llvm.org/bionic/   llvm-toolchain-bionic-10  main'
+RUN apt update
+RUN apt-get install llvm-10 lldb-10 llvm-10-dev libllvm10 llvm-10-runtime -y
+
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | /usr/bin/python3.9
+
+RUN python3.9 -m pip install --upgrade pip setuptools wheel
+RUN LLVM_CONFIG=/usr/bin/llvm-config-10 python3.9 -m pip install llvmlite
+
+# Install python project dependencies
+RUN python3.9 -m pip install --upgrade pip wheel setuptools numpy
+COPY requirements/requirements.txt requirements.txt
+RUN LLVM_CONFIG=/usr/bin/llvm-config-10 python3.9 -m pip install -r requirements.txt --ignore-installed
+
+# Optional: Copy netrc config for W&B monitoring
+# COPY ~/.netrc .netrc
+
+# Copy project files
+WORKDIR /opt/flbench
+RUN git clone -b submission --recurse-submodules https://github.com/laminair/FLEdge.git /opt/flbench
+
